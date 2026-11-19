@@ -1,0 +1,10 @@
+[project]
+name = "degree-day-normalizer"
+version = "0.1.0"
+description = "Weather-normalize monthly utility use with heating and cooling degree days"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
