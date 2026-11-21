@@ -1,6 +1,14 @@
 # degree-day-normalizer
 
-A cold winter makes a gas bill look bad even when the building ran well. To compare one year with another, or to check whether an energy project saved anything, utility use has to be adjusted for weather. This tool turns daily temperatures into monthly heating or cooling degree days, fits a straight-line weather model to monthly usage, and shows what each month would have used in typical weather.
+[![CI](https://github.com/yassine2med/degree-day-normalizer/actions/workflows/ci.yml/badge.svg)](https://github.com/yassine2med/degree-day-normalizer/actions/workflows/ci.yml) ![Python](https://img.shields.io/badge/python-3.10%2B-3776ab) ![License](https://img.shields.io/badge/license-MIT-8fb08a)
+
+Adjusts monthly utility use for weather using heating or cooling degree days.
+
+![Screenshot](docs/screenshot.png)
+
+## What it is for
+
+A cold winter makes a gas bill look bad even when the building ran well. An energy manager, facility manager or project engineer needs to compare one year with another, or check whether an energy project saved anything, so utility use has to be adjusted for weather. This tool turns daily temperatures into monthly heating or cooling degree days (a measure of how far the outdoor temperature is from a balance point), fits a straight-line weather model to monthly usage, and shows what each month would have used in typical weather.
 
 ## Install
 
@@ -12,13 +20,25 @@ pip install -r requirements.txt pytest
 
 Python 3.10 or newer. No runtime dependencies.
 
-## Usage
+## How to use
+
+| I want to | Command |
+| --- | --- |
+| Normalize monthly gas use for heating weather | `PYTHONPATH=src python -m degree_day examples/daily_temps.csv examples/gas_use.csv` |
+| Use cooling degree days, for example with electric data | `PYTHONPATH=src python -m degree_day TEMPS USAGE --mode cooling --column kwh` |
+| Read a usage column other than `therms` (default) | `PYTHONPATH=src python -m degree_day TEMPS USAGE --column kwh` |
+| Change the 65 F balance point | `PYTHONPATH=src python -m degree_day TEMPS USAGE --base 60` |
+| See all options | `PYTHONPATH=src python -m degree_day --help` |
+
+Temperature file columns: `date,mean_temp_f`. Usage file columns: `month,<column>`. On Windows PowerShell set `$env:PYTHONPATH = "src"` first. In the output, `diff` is actual minus normal.
+
+Worked example:
 
 ```
 PYTHONPATH=src python -m degree_day examples/daily_temps.csv examples/gas_use.csv
 ```
 
-On Windows PowerShell set `$env:PYTHONPATH = "src"` first. Output (the example data is invented):
+Output (the example data is invented):
 
 ```
 model: therms = 877 + 8.40 x heating degree days (R2 0.999)
@@ -48,8 +68,6 @@ month         DD   actual   normal    diff
 2025-11      721     6774     6332    +442
 2025-12      969     8983     8562    +421
 ```
-
-`diff` is actual minus normal. Options: `--mode cooling` for cooling degree days (use with electric data and `--column kwh`), `--base 60` to change the 65 F balance point.
 
 ## How it works
 
